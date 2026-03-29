@@ -32,9 +32,11 @@ We compared **TaikoNet** against various machine learning models and traditional
 | **Random Forest** | 80.1% | 82.4% | Ensemble | Good for non-linearities |
 | **TaikoNet (Proposed)** | **81.8%** | **84.0%** | **Deep Learning (MLP)** | **Best at isolating intent** |
 
-| Full Accuracy Comparison | Simple Accuracy Comparison |
-| :---: | :---: |
-| ![Full Accuracy](models/model_comparison_full.png) | ![Simple Accuracy](models/model_comparison_simple.png) |
+#### Full Accuracy Benchmarking
+![Full Accuracy Comparison](models/model_comparison_full.png)
+
+#### Simple Accuracy Benchmarking
+![Simple Accuracy Comparison](models/model_comparison_simple.png)
 
 > [!TIP]
 > **Why use Simple Accuracy?**
