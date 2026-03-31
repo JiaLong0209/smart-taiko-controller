@@ -12,7 +12,7 @@ class Config:
     
     
     # AI & Capture Settings
-    CAPTURE_WINDOW = 0.0        # 5ms capture window (Low Latency)
+    CAPTURE_WINDOW = 0.005        # 5ms capture window (Low Latency)
     CROSSTALK_RATIO = 1.3
 
     TRIGGER_THRESHOLD = 70
