@@ -1,5 +1,5 @@
 
-# 🥁 Taiko Controller AI: Deep Learning-Driven Hit Detection
+# 🥁 Smart Taiko Controller: Deep Learning-Driven Hit Detection
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
 ![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-EE4C2C)
