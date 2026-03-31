@@ -50,6 +50,7 @@ We compared **TaikoNet** against various machine learning models and traditional
  * **Hidden Layers:** 3 Layers (64 → 32 → 16 neurons) utilizing ReLU activation and Dropout (0.2).
  * **Output Layer:** 5 Classes (`Don_Left`, `Don_Right`, `Ka_Left`, `Ka_Right`, `Noise`).
 
+
 ![TaikoNet Architecture](docs/TaikoNet.png)
 
 ## 🔄 System Architecture & Data Flow
@@ -112,13 +113,27 @@ poetry shell
 pip install torch pandas numpy scikit-learn pyqt5 pyautogui pyserial xgboost joblib
 ```
 
-### 3. Model Training (Optional)
+### 3. Training Data Collection
+Before training **TaikoNet**, you must collect a dataset of sensor readings for each hit type.
+
+![Training Data Collector](docs/training-data-collector.png)
+
+1.  **Launch the Collector:**
+    ```bash
+    poetry run python src/data_collector.py
+    ```
+2.  **Select Label:** Choose the hit type you are about to record (e.g., `Don_Left`, `Ka_Right`, `Noise`).
+3.  **Set Count:** Specify how many samples you want to collect (recommended: 50-100 per class).
+4.  **Record:** Click "Start Recording" and strike the drum accordingly. The system captures the 5ms peak for each hit.
+5.  **Output:** Data is automatically appended to `data/taiko_data.csv`.
+
+### 4. Model Training (Optional)
 If you wish to retrain TaikoNet or perform a model comparison:
 ```bash
 poetry run python src/model_trainer.py
 ```
 *This updates `taiko_taikonet_model.pth` and scalers in the `models/` directory.*
-### 4. Running the Controller
+### 5. Running the Controller
 Execute the main visual interface to begin gameplay:
 ```bash
 poetry run python src/taiko_main_visual.py
