@@ -6,13 +6,17 @@
 ![Arduino](https://img.shields.io/badge/Arduino-Hardware-00979D)
 ![PyQt5](https://img.shields.io/badge/PyQt5-GUI-green)
 
+![Taiko GUI](docs/TaikoGUI.png)
+
 An advanced, AI-powered embedded controller for the *Taiko no Tatsujin* rhythm game. This project replaces traditional, error-prone rule-based sensor logic with a custom Multilayer Perceptron (**TaikoNet**) to accurately classify drum hits, effectively eliminating mechanical crosstalk and hardware noise.
 
 ## 🚀 Project Overview
 
 Building a physical drum controller introduces significant physical constraints: **vibration crosstalk** (striking one side triggers sensors on the other) and **uneven force distribution**. 
 
-Standard rule-based logic (e.g., checking for the maximum peak value) frequently misclassifies these signals. This project solves this by using an Arduino to sample 4 analog sensors at 2000Hz, streaming the data via UART to a Python backend, where **TaikoNet** predicts the exact hit location in real-time (<1ms latency) and triggers keyboard inputs via PyAutoGUI.
+Standard rule-based logic (e.g., checking for the maximum peak value) frequently misclassifies these signals. This project solves this by using an Arduino to sample 4 analog sensors at 2000Hz, streaming the data via UART to a Python backend, where **TaikoNet** predicts the exact hit location in real-time (<10ms latency) and triggers keyboard inputs via PyAutoGUI.
+
+![Sensor Data Crosstalk](docs/sensor-data-crosstalk.png)
 
 ## 🧠 The AI Advantage: TaikoNet vs. Threshold Logic
 
@@ -38,19 +42,21 @@ We compared **TaikoNet** against various machine learning models and traditional
 #### Simple Accuracy Benchmarking
 ![Simple Accuracy Comparison](models/model_comparison_simple.png)
 
-> [!TIP]
 > **Why use Simple Accuracy?**
 > While TaikoNet is excellent at distinguishing between left and right hits, most players find that as long as the hit type (Don vs. Ka) is correct, the game remains playable. Simple Accuracy reflects the model's reliability in identifying the core hit intent.
 
-> [!TIP]
-> **TaikoNet Architecture:**
-> * **Input Layer:** 4 Features (Raw analog peaks from `Don_L`, `Don_R`, `Ka_L`, `Ka_R`).
-> * **Hidden Layers:** 3 Layers (64 → 32 → 16 neurons) utilizing ReLU activation and Dropout (0.2).
-> * **Output Layer:** 5 Classes (`Don_Left`, `Don_Right`, `Ka_Left`, `Ka_Right`, `Noise`).
+## TaikoNet Architecture
+ * **Input Layer:** 4 Features (Raw analog peaks from `Don_L`, `Don_R`, `Ka_L`, `Ka_R`).
+ * **Hidden Layers:** 3 Layers (64 → 32 → 16 neurons) utilizing ReLU activation and Dropout (0.2).
+ * **Output Layer:** 5 Classes (`Don_Left`, `Don_Right`, `Ka_Left`, `Ka_Right`, `Noise`).
+
+![TaikoNet Architecture](docs/TaikoNet.png)
 
 ## 🔄 System Architecture & Data Flow
 
-The system is designed for high-throughput, low-latency execution (<1ms inference) required by rhythm games.
+The system is designed for high-throughput, low-latency execution (<10ms inference) required by rhythm games.
+
+![System Workflow](docs/workflow.png)
 
 **1. Hardware Layer (Arduino Uno)**
 * **Sensors:** 4x Piezo/FSR sensors mapped to hardware interrupts.
@@ -78,6 +84,8 @@ The system is designed for high-throughput, low-latency execution (<1ms inferenc
     * `A1`: Don_Left (Center)
     * `A2`: Don_Right (Center)
     * `A3`: Ka_Right (Rim)
+
+![Hardware Sensor Mapping](docs/hardware-sensor-mapping.png)
 * **Sampling Rate:** 2000Hz, achieved via non-blocking `micros()` timers.
 
 ## 🛠️ Installation & Usage
@@ -110,7 +118,6 @@ If you wish to retrain TaikoNet or perform a model comparison:
 poetry run python src/model_trainer.py
 ```
 *This updates `taiko_taikonet_model.pth` and scalers in the `models/` directory.*
-
 ### 4. Running the Controller
 Execute the main visual interface to begin gameplay:
 ```bash
@@ -142,3 +149,23 @@ poetry run python src/taiko_main_visual.py
  ┣ 📜 pyproject.toml             # Poetry project definition
  ┗ 📜 README.md
 ```
+## 🎮 Gameplay Performance Analysis
+
+The following results demonstrate two successful runs on *Taiko no Tatsujin* (osu! mode) using the custom controller driven by **TaikoNet**.
+
+![Gameplay Result](docs/gameplay-result.png)
+
+### 1. Muzukashii Difficulty (2.22⭐)
+*   **Accuracy:** 88.50%
+*   **Result:** A solid **B rank**.
+*   **Performance:** Achieved 81 "Great" hits and only 4 misses. This demonstrates that for mid-level difficulty, the controller's latency and hit detection are very stable, allowing for a 65-combo streak.
+
+### 2. Oni Difficulty (4.31⭐)
+*   **Accuracy:** 80.81%
+*   **Result:** A respectable **B rank** on a high-difficulty map.
+*   **Performance:** Despite the significantly higher note density and speed, the controller maintained over 80% accuracy. With 136 "Greats," the AI proves it can handle rapid-fire inputs even when physical vibrations (crosstalk) are at their peak.
+
+---
+
+### 📝 Conclusion: Real-World Utility
+To validate the real-world utility of **TaikoNet**, live gameplay tests were conducted. On a *Muzukashii* (Hard) difficulty map, the system achieved **88.50% accuracy**, demonstrating high precision in standard rhythm patterns. Even on an *Oni* (Extreme) difficulty map with complex note density, the AI-driven controller maintained an **80.81% accuracy rate**. These results confirm that the Deep Learning model effectively filters physical noise and crosstalk in high-pressure, real-time gaming scenarios.
